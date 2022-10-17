@@ -1,12 +1,7 @@
 if(!localStorage.getItem("products")){
 	localStorage.setItem("products",JSON.stringify([
-	{pid:1,pname:"Rice",price:38},
-	{pid:2,pname:"Sugar",price:44},
-	{pid:3,pname:"Coconut Oil",price:120},
-	{pid:4,pname:"Sunflower Oil",price:80},
-	{pid:5,pname:"Pen",price:5},
-	{pid:6,pname:"Biscuite",price:20},
-	{pid:7,pname:"Colgate",price:30},
+	{pid:1,pname:"Arroz", pdescription: "Grano blanco", price:38},
+	{pid:2,pname:"Azucar", pdescription: "Grano amarillo", price:44}
 	]));
 }
 var plen=0;
@@ -18,7 +13,11 @@ $(document).ready(function(){
 	var tb=$("#tbody");
 	for(var i=0;i<plen;i++){
 		if(products[i]){
-			tb.add("<tr><td>"+selectCheck(products[i].pid)+"</td><td>"+(sno+1)+"</td><td id='n"+products[i].pid+"'>"+products[i].pname+"</td><td id='p"+products[i].pid+"'>"+products[i].price+"</td><td>"+txtQuantity(products[i].pid)+"</td><td id='t"+products[i].pid+"'>"+(products[i].price)+"</td><td><a id='view-icon' class='action-icon' onclick='pview("+products[i].pid+")'><i class='fa fa-eye'></i></a><a class='action-icon' onclick='edit("+products[i].pid+")'><i class='fa fa-pencil'></i></a><a onclick='pdelete("+products[i].pid+")' class='action-icon'><i class='fa fa-trash-o'></i></a></td></tr>").appendTo("#tbody");
+			tb.add("<tr><td>"+selectCheck(products[i].pid)+"</td><td>"+(sno+1)+
+			"</td><td id='n"+products[i].pid+"'>"+products[i].pname+
+			"</td><td id='d"+products[i].pid+"'>"+products[i].pdescription+
+			"</td><td id='p"+products[i].pid+"'>"+products[i].price+
+			"</td><td>"+txtQuantity(products[i].pid)+"</td><td id='t"+products[i].pid+"'>"+(products[i].price)+"</td><td><a id='view-icon' class='action-icon' onclick='pview("+products[i].pid+")'><i class='fa fa-eye'></i></a><a class='action-icon' onclick='edit("+products[i].pid+")'><i class='fa fa-pencil'></i></a><a onclick='pdelete("+products[i].pid+")' class='action-icon'><i class='fa fa-trash-o'></i></a></td></tr>").appendTo("#tbody");
 			sno++;
 		}
 	}
@@ -83,6 +82,7 @@ function edit(id){
 	$('.edit').css("display","block"); 
 	var product=searchObj(id);
 	document.forms.editForm.name.value=""+product.pname;
+	document.forms.editForm.description.value=""+product.pdescription;
 	document.forms.editForm.price.value=product.price;
 	document.forms.editForm.id.value=product.pid;
 }
@@ -91,6 +91,7 @@ function  pview(id){
 	$('.view').css("display","block"); 
 	var product=searchObj(id);
 	$('#view-name').html(""+product.pname);
+	$('#view-description').html(""+product.pdescription);
 	$('#view-price').html(""+product.price);
 }
 
@@ -111,6 +112,7 @@ function editSave(){
 	var id=document.forms.editForm.id.value;
 	var index=searchObjIndex(id);
 	products[index].pname=document.forms.editForm.name.value;
+	products[index].pdescription=document.forms.editForm.description.value;
 	products[index].price=document.forms.editForm.price.value;
 	localStorage.setItem("products",JSON.stringify(products));
 	alert("Successfully Saved");
@@ -124,8 +126,9 @@ function editCancel(){
 function addSave(){
 	var products=JSON.parse(localStorage.getItem("products"));
 	var name=document.forms.addForm.name.value;
+	var description=document.forms.addForm.description.value;
 	var price=document.forms.addForm.price.value;
-	var product={pid: null,pname: null,price: null};
+	var product={pid: null,pname: null, pdescription: null,price: null};
 	var len=products.length;
 	var chk=len-1;
 	var id=null;
@@ -140,6 +143,7 @@ function addSave(){
 	}
 	product.pid=id;
 	product.pname=name;
+	product.pdescription=description;
 	product.price=price;
 	products[len]=product;
 	localStorage.setItem("products",JSON.stringify(products));
@@ -163,7 +167,9 @@ function selectView(){
 			var id=Number(document.getElementById('c'+products[i].pid).id.slice(1));
 			var index = searchObjIndex(id);
 			if(checkboxObj.checked == true){
-				tb.add("<tr class='select-view-row'><td>"+(sno+1)+"</td><td>"+products[index].pname+"</td><td>"+products[index].price+"</td></tr>").appendTo("#select-view-tbody");
+				tb.add("<tr class='select-view-row'><td>"+(sno+1)+"</td><td>"+products[index].pname+
+				"</td><td>"+products[index].pdescription+
+				"</td><td>"+products[index].price+"</td></tr>").appendTo("#select-view-tbody");
 				checkDisplay=true;
 			}
 		}
